@@ -1,0 +1,15 @@
+Excellent question — and it’s one every smart developer asks when setting up a Next.js app with parallel routes or layouts. Let’s break this down 👇
+
+🧠 Why You might see (marketing) and (dashboard) folders
+
+These named route groups — (marketing) and (dashboard) — are part of a recommended Next.js architecture pattern for apps that have both public and private sections.
+
+Here’s the idea:
+
+Folder	Purpose	Example URLs	Access
+(marketing)	Public pages (home, about, contact)	/, /about, /contact	Everyone
+(dashboard)	Authenticated user pages (profile, analytics, settings)	/dashboard, /dashboard/settings	Logged-in users only
+
+✅ They are “groups”, not actual routes — the parentheses tell Next.js not to include that name in the URL.
+So /src/app/(marketing)/page.js → /
+And /src/app/(dashboard)/page.js → /dashboard
