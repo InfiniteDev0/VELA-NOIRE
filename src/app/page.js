@@ -1,6 +1,16 @@
-// app/page.js
-import { redirect } from 'next/navigation';
+import Ourcollection from '@/components/home/collection'
+import Hero from '@/components/home/Hero'
+import TopCollection from '@/components/home/topCollection'
+import React from 'react'
 
-export default function Home() {
-  redirect('/eng-e1/homepage');
+const page = () => {
+  return (
+    <div>
+      <Hero/>
+      <TopCollection/>
+      <Ourcollection/>
+    </div>
+  )
 }
+
+export default page
