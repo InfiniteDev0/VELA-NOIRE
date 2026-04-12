@@ -20,7 +20,7 @@ const ClientWrapper = ({ children }) => {
   const pathname = usePathname();
 
   const hiddenRoutes = [
-    "/auth",
+    "/login",
   ];
   const shouldHideLayout = hiddenRoutes.some((route) =>
     pathname?.includes(route)
@@ -42,20 +42,7 @@ const ClientWrapper = ({ children }) => {
       />
       <Banner/>
       {!shouldHideLayout && <Navbar />}
-      <ScrollingAnimations />
-      {/* <AnimatePresence>
-        {shouldShowChat && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.4 }}
-          >
-            <ChatAssistantAi />
-          </motion.div>
-        )}
-      </AnimatePresence> */}
-
+      {!shouldHideLayout && <ScrollingAnimations />}
       {children}
       {!shouldHideLayout && <Footer />}
     </>

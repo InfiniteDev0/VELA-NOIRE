@@ -9,6 +9,12 @@ const page = () => {
       <Hero/>
       <TopCollection/>
       <Ourcollection/>
+      <TopCollection/>
+      <Ourcollection/>
+      <TopCollection/>
+      <Ourcollection/>
+      <TopCollection/>
+      <Ourcollection/>
     </div>
   )
 }

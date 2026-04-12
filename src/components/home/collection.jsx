@@ -48,30 +48,26 @@ const Ourcollection = () => {
   return (
     <section className="w-full h-auto !py-20 !px-8 flex flex-col items-center justify-center bg-white">
       {/* header */}
-      <div className="max-w-4xl text-center !space-y-4">
+      <div className="max-w-4xl text-center">
         <h1 className="text-4xl  font-light tracking-tight text-black ">
           Explore the Exclusive VelaNoire Collections
         </h1>
-
-        <div className="flex items-center justify-center gap-4">
-          <span className="h-[2px] w-8 bg-black/10"></span>
-          <p className="text-gray-500 text-sm md:text-base tracking-widest uppercase font-medium">
-            The Art of Modesty
-          </p>
-          <span className="h-[2px] w-8 bg-black/10"></span>
-        </div>
-
-        <p className="text-gray-600 font-serif text-lg md:text-xl max-w-2xl mx-auto leading-relaxed pt-4">
+        <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed pt-4">
           Inspire by tradional and elegant islamic way of dressing.
         </p>
       </div>
 
       {/* collection shortcuts */}
-      <div className="grid grid-cols-2 gap-5 p-5">
+      <div className="grid grid-cols-4 gap-5 p-5">
         {Collection.map((item, index) => {
-          return <div key={index}>
-            <Image alt="collection images" src={item.image}/>
-          </div>;
+          return (
+            <div className="relative" key={index}>
+              <Image alt="collection images" src={item.image} />
+
+              {/* overlay text at the bottom left of the image */}
+              <div className="absolute">{item.textOverlay.title}</div>
+            </div>
+          );
         })}
       </div>
     </section>

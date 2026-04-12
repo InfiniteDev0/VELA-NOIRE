@@ -62,7 +62,7 @@ export default function Navbar() {
           <Link href={"/"}>
             <Heart className="w-4 h-4" />
           </Link>
-          <Link href={"/"}>
+          <Link href={"/login"}>
             <User2 className="w-4 h-4" />
           </Link>
           <Link href={"/"}>

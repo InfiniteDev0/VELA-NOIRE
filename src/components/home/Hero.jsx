@@ -72,20 +72,8 @@ const Hero = () => {
           The looks to keep you cool all season.
           sunbasked occasions.
         </p>
-        <span className="content-btn-container">
-          <a href="/en/occasion-shop/women?ab=HP_2.1_FULL_Occasion_260407">
-            Shop Women
-            <span style={{ display: "none" }} className="ae-compliance-indent">
-              : Spring Looks
-            </span>
-          </a>
-          <a href="/en/occasion-shop/men?ab=HP_2.2_FULL_Occasion_260407">
-            Shop Men
-            <span style={{ display: "none" }} className="ae-compliance-indent">
-              : Spring Looks
-            </span>
-          </a>
-        </span>
+        {/* cta */}
+        
       </div>
     </div>
   );

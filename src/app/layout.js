@@ -1,4 +1,4 @@
-import { Outfit, Poppins } from "next/font/google";
+import { Birthstone, Outfit, Poppins } from "next/font/google";
 import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Suspense } from "react";
@@ -17,7 +17,13 @@ const outfit = Outfit({
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
-  weight: ["300"], // Multiple weights for better flexibility
+  weight: ["400"], // Multiple weights for better flexibility
+});
+
+const birthstone = Birthstone({
+  variable: "--font-birthstone",
+  subsets: ["latin"],
+  weight: ["400"], // Multiple weights for better flexibility
 });
 
 export const metadata = {
@@ -29,7 +35,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${outfit.variable} ${poppins.variable} ${outfit.className} antialiased font-outfit`}
+        className={`${outfit.variable} ${poppins.variable} ${outfit.className} antialiased`}
       >
         <Toaster position="top-center" theme="dark" richColors closeButton />
         <SpeedInsights />
