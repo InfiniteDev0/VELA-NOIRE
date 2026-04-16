@@ -1,13 +1,3 @@
-// app/(dashboard)/layout.js
-
-
-
-export default function MarketingLayout({ children }) {
-  return (
-    <>
-    <div>
-        
-    </div>
-    </>
-  );
+export default function MyVnLayout({ children }) {
+  return <>{children}</>;
 }

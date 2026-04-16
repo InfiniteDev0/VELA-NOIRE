@@ -53,7 +53,7 @@ const Ourcollection = () => {
           Explore the Exclusive VelaNoire Collections
         </h1>
         <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed pt-4">
-          Inspire by tradional and elegant islamic way of dressing. this is Velanoire
+          Inspire by tradional and elegant islamic way of dressing. 
         </p>
       </div>
 

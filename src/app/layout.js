@@ -11,7 +11,7 @@ import { ShopProvider } from "./context/ShopContext";
 const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
-  weight: ["200"], // Multiple weights for better flexibility
+  weight: ["400"], // Multiple weights for better flexibility
 });
 
 const poppins = Poppins({

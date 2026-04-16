@@ -5,7 +5,7 @@ import {
   HandbagIcon,
   Heart,
   User2,
-  XIcon,
+  UserRoundCheck,
   Sparkles,
   Layers,
   Gem,
@@ -17,10 +17,12 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
+import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Navbar() {
   const [MenuState, setMenuState] = useState(false);
+  const { isAuthenticated, loading } = useAuth();
 
   const menuItems = [
     { label: "New & featured", path: "/new", icon: Sparkles },
@@ -34,7 +36,7 @@ export default function Navbar() {
   ];
 
   return (
-    <div className="fixed funnel w-full z-50">
+    <div className="fixed funnel  w-full z-50">
       {/* Desktop Navbar */}
       <nav className="grid grid-cols-3 fixed w-full z-50 bg-white backdrop-blur-3xl items-center justify-between h-fit !py-2 !px-5 text-blue-950 transition-all duration-400">
         {/* menu button manager */}
@@ -43,9 +45,9 @@ export default function Navbar() {
           className="w-fit h-fit px-2 py-2 flex flex-col cursor-pointer"
         >
           {!MenuState ? (
-            <p className="font-bold text-black">Menu</p>
+            <p className=" text-black">Menu</p>
           ) : (
-            <p className="font-bold text-black">Close</p>
+            <p className=" text-black">Close</p>
           )}
         </div>
 
@@ -62,9 +64,18 @@ export default function Navbar() {
           <Link href={"/"}>
             <Heart className="w-4 h-4" />
           </Link>
-          <Link href={"/login"}>
-            <User2 className="w-4 h-4" />
-          </Link>
+
+          {/* User icon — switches based on auth state */}
+          {!loading && (
+            <Link href={isAuthenticated ? "/MyVn" : "/login"}>
+              {isAuthenticated ? (
+                <UserRoundCheck className="w-4 h-4" />
+              ) : (
+                <User2 className="w-4 h-4" />
+              )}
+            </Link>
+          )}
+
           <Link href={"/"}>
             <HandbagIcon className="w-4 h-4" />
           </Link>
@@ -87,7 +98,7 @@ export default function Navbar() {
                   <Link
                     href={path}
                     onClick={() => setMenuState(false)} // Close menu on click
-                    className="block !px-2 rounded-md transition-all duration-300 flex items-center justify-between !py-2 text-sm font-semibold tracking-wider
+                    className="block !px-2 rounded-md transition-all duration-300 flex items-center justify-between !py-2 text-sm  tracking-wider
                     bg-zinc-100 hover:bg-black hover:text-white"
                   >
                     {label}

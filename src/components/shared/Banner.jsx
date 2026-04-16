@@ -45,7 +45,7 @@ const Banner = () => {
       className="bg-black flex items-center justify-center text-white !py-2 w-full z-[60]"
       style={{ position: "sticky", top: 0 }}
     >
-      <div className="flex text-[11.5px] font-semibold tracking-wider gap-1 items-center justify-center">
+      <div className="flex text-[11.5px]  tracking-wider gap-1 items-center justify-center">
         {bannerContent[pathname]}{" "}
         <p className="tracking-wider ml-2">
           <span className="underline font-semibold transition-all">Sign in</span>{" "}

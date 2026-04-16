@@ -1,7 +1,11 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,43 +19,118 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
 
-// Define validation schema
-const formSchema = z.object({
+// Schemas
+const loginSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
+
+const registerSchema = z.object({
   email: z.string().email("Invalid email address"),
   firstName: z.string().min(2, "First name is too short"),
   lastName: z.string().min(2, "Last name is too short"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 const LoginForm = () => {
-  // Initialize form
+  const [formType, setFormType] = useState("login"); // "login" | "register"
+  const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const { login, register, loginWithGoogle } = useAuth();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") || "/MyVn";
+
+  const isLogin = formType === "login";
+  const schema = isLogin ? loginSchema : registerSchema;
+
   const form = useForm({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       email: "",
       firstName: "",
       lastName: "",
+      password: "",
     },
   });
 
-  const onSubmit = (values) => {
-    console.log("Form Submitted:", values);
+  // Reset form when switching modes
+  const switchMode = (mode) => {
+    setFormType(mode);
+    form.reset();
+  };
+
+  const onSubmit = async (values) => {
+    setSubmitting(true);
+    try {
+      if (isLogin) {
+        const res = await login({
+          email: values.email,
+          password: values.password,
+        });
+        if (res?.error) {
+          toast.error(
+            res.error.message || "Login failed. Please check your credentials.",
+          );
+        } else {
+          toast.success("Welcome back!");
+          router.push(redirect);
+        }
+      } else {
+        const name = `${values.firstName} ${values.lastName}`.trim();
+        const res = await register({
+          name,
+          email: values.email,
+          password: values.password,
+        });
+        if (res?.error) {
+          toast.error(
+            res.error.message || "Registration failed. Please try again.",
+          );
+        } else {
+          toast.success("Account created! Welcome to Vela Noire.");
+          router.push(redirect);
+        }
+      }
+    } catch (err) {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleGoogle = async () => {
+    try {
+      await loginWithGoogle();
+    } catch {
+      toast.error("Google sign-in failed. Please try again.");
+    }
   };
 
   return (
-    <div className="mx-auto max-w-[450px]  space-y-2 py-6">
+    <div className="mx-auto max-w-[450px] font-semibold space-y-2 py-6">
       {/* Header */}
       <div className="space-y-1">
-        <h1 className="text-3xl font-semibold tracking-tight">
-          Create your free account
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {isLogin ? "Welcome back" : "Create your free account"}
         </h1>
         <p className="text-muted-foreground text-sm">
-          Join our community and be part of the movement
+          {isLogin
+            ? "Sign in to your Vela Noire account"
+            : "Join our community and be part of the movement"}
         </p>
       </div>
 
-      {/* Social CTA */}
-      <Button variant="outline" className="w-full py-" type="button">
+      {/* Google CTA */}
+      <Button
+        variant="outline"
+        className="w-full font-semibold"
+        type="button"
+        onClick={handleGoogle}
+        disabled={submitting}
+      >
         <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
           <path
             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -84,13 +163,16 @@ const LoginForm = () => {
 
       {/* Main Form */}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-4 font-semibold"
+        >
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel className={"font-semibold"}>Email</FormLabel>
                 <FormControl>
                   <Input placeholder="johnmiller@example.com" {...field} />
                 </FormControl>
@@ -99,37 +181,85 @@ const LoginForm = () => {
             )}
           />
 
-          <div className="grid grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>First Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Last Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Miller" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          {/* Name fields — only shown when registering */}
+          {!isLogin && (
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className={"font-semibold"}>
+                      First Name
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="Amira" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className={"font-semibold"}>Last Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Hassan" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
 
-          <Button type="submit" className="w-full  text-base">
-            Continue with email
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className={"font-semibold"}>Password</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      className="pr-10"
+                      {...field}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((v) => !v)}
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground"
+                      tabIndex={-1}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="size-4" />
+                      ) : (
+                        <Eye className="size-4" />
+                      )}
+                    </button>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button
+            type="submit"
+            className="w-full font-semibold text-base"
+            disabled={submitting}
+          >
+            {submitting
+              ? isLogin
+                ? "Signing in..."
+                : "Creating account..."
+              : isLogin
+                ? "Sign in"
+                : "Create account"}
           </Button>
         </form>
       </Form>
@@ -137,26 +267,29 @@ const LoginForm = () => {
       {/* Footer Info */}
       <div className="space-y-4">
         <p className="text-muted-foreground text-center text-xs leading-relaxed px-4">
-          By Continuing, you agree to VelaNoire's{" "}
+          By continuing, you agree to Vela Noire&apos;s{" "}
           <Link
             href="#"
-            className="underline underline-offset-4 hover:text-primary transition-colors"
+            className="underline underline-offset-4 text-foreground hover:text-primary transition-colors"
           >
-            Terms of Services
+            Terms of Service
           </Link>{" "}
           and our{" "}
           <Link
             href="#"
-            className="underline underline-offset-4 hover:text-primary transition-colors"
+            className="underline underline-offset-4 text-foreground  hover:text-primary transition-colors"
           >
-            Privacy policy.
+            Privacy Policy.
           </Link>
         </p>
 
         <p className="text-muted-foreground text-center text-sm">
-          Already have an account?{" "}
-          <span className="text-primary underline font-semibold cursor-pointer hover:underline">
-            Log in
+          {isLogin ? "Don't have an account? " : "Already have an account? "}
+          <span
+            className="text-primary underline font-semibold cursor-pointer hover:underline"
+            onClick={() => switchMode(isLogin ? "register" : "login")}
+          >
+            {isLogin ? "Sign up" : "Log in"}
           </span>
         </p>
       </div>
