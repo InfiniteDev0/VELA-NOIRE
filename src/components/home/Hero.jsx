@@ -1,81 +1,71 @@
 import Link from "next/link";
-import React from "react";
-import { Button } from "../ui/button";
-import { A1, A2, A3, A4 } from "../../../public/assets/images";
-import Image from "next/image";
 
-const Hero = () => {
-  const Collection = [
-    {
-      image: A4,
-      textOverlay: {
-        title: "Floral Grace",
-        caption:
-          "Chapter I: The Awakening. Delicate textures and botanical whispers",
-        cta: "Explore Spring",
-        url: "/collections/spring-floral-grace",
-      },
-    },
-    {
-      image: A1,
-      textOverlay: {
-        title: "Desert Bloom",
-        caption: "Chapter II: The Radiant Heat. High-breathability georgette",
-        cta: "Shop Summer",
-        url: "/collections/summer-desert-bloom",
-      },
-    },
-    {
-      image: A3,
-      textOverlay: {
-        title: "Amber Luxe",
-        caption: "Chapter III: The Falling Leaf. Deep tones and rich.",
-        cta: "Discover Autumn",
-        url: "/collections/autumn-amber-luxe",
-      },
-    },
-    {
-      image: A2,
-      textOverlay: {
-        title: "Velvet Moon",
-        caption:
-          "Chapter IV: The Midnight Chill. Weighted fabrics and deep lunar hues.",
-        cta: "View Winter",
-        url: "/collections/winter-velvet-moon",
-      },
-    },
-  ];
+/**
+ * Hero
+ *
+ * Full-viewport hero that uses whatever media the admin uploaded for a
+ * collection. Falls back to a solid dark background if no media exists yet.
+ *
+ * Props:
+ *   collection — { name, slug, tagline, heroImage, heroVideo }
+ *   cta        — { label, href }  optional override for the CTA button
+ */
+const Hero = ({ collection, cta }) => {
+  const { name, slug, tagline, heroImage, heroVideo } = collection ?? {};
+
+  const ctaLabel = cta?.label ?? `Discover ${name ?? "the Collection"}`;
+  const ctaHref = cta?.href ?? `/collections/${slug ?? ""}`;
 
   return (
-    <div className="relative h-[95vh] grid grid-cols-4 w-full overflow-hidden">
-      {Collection.map((item, index) => {
-        return (
-          <div
-            key={index}
-            className="relative h-full w-full group cursor-pointer flex items-end"
-          >
-            {/* 1. Background Image */}
-            <Image
-              src={item.image}
-              alt={item.textOverlay.title}
-              fill
-              className="object-cover  backdrop-grayscale-25 transition-transform duration-700 "
-            />
-          </div>
-        );
-      })}
+    <section className="relative h-[95vh] w-full overflow-hidden bg-zinc-950">
+      {/* ── Background media ── */}
+      {heroVideo ? (
+        <video
+          src={heroVideo}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          // Show the still image while the video is buffering (especially mobile)
+          poster={heroImage ?? undefined}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      ) : heroImage ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={heroImage}
+          alt={name ?? "Collection"}
+          // Hero is always the LCP element — tell the browser to fetch it first
+          fetchPriority="high"
+          loading="eager"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      ) : null}
 
-      {/* text container */}
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none w-full">
-        <p className="text-7xl text-white">Midnight Bloom</p>
-        <p className="text_paragraph text-white">
-          The looks to keep you cool all season.
-          sunbasked occasions.
-        </p>
-        {/* cta */}
-        
+      {/* ── Gradient overlay — bottom-heavy so text pops ── */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/70" />
+
+      {/* ── Text overlay ── */}
+      <div className="absolute bottom-0 left-0 w-full max-w-2xl px-10 pb-20 space-y-2">
+        <h1
+          className="text-white leading-none text-4xl"
+        >
+          {name ?? "Vela Noire"}
+        </h1>
+        {tagline && (
+          <p className="text-white/75 font-light leading-relaxed max-w-md">
+            {tagline}
+          </p>
+        )}
+        <Link
+          href={ctaHref}
+          className="inline-block mt-2 underline text-white hover:text-gray-500 transition-colors duration-300"
+        >
+          {ctaLabel}
+        </Link>
       </div>
-    </div>
+    </section>
   );
 };
 

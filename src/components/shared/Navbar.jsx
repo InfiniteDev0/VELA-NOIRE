@@ -36,9 +36,9 @@ export default function Navbar() {
   ];
 
   return (
-    <div className="fixed funnel  w-full z-50">
+    <div className="fixed funnel   w-full z-50">
       {/* Desktop Navbar */}
-      <nav className="grid grid-cols-3 fixed w-full z-50 bg-white backdrop-blur-3xl items-center justify-between h-fit !py-2 !px-5 text-blue-950 transition-all duration-400">
+      <nav className="grid grid-cols-3  fixed w-full z-50 bg-white backdrop-blur-3xl items-center justify-between h-fit !py-2 !px-5 text-blue-950 transition-all duration-400">
         {/* menu button manager */}
         <div
           onClick={() => setMenuState(!MenuState)}

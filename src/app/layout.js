@@ -35,7 +35,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${outfit.variable} ${poppins.variable} ${outfit.className} antialiased`}
+        className={`${outfit.variable} ${poppins.variable} ${outfit.className} antialiased dark`}
       >
         <Toaster position="top-center" theme="dark" richColors closeButton />
         <SpeedInsights />

@@ -4,7 +4,7 @@ import React from "react";
 
 const Services = () => {
   return (
-    <div className="relative h-fit w-full !px-6 overflow-hidden">
+    <div className="h-fit w-full !px-6 overflow-hidden">
       <div className="flex flex-col gap-5 items-center">
         <div className="text-center">
           <p className="text-xl font-semibold text-gray-700">
